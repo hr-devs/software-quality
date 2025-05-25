@@ -1,4 +1,5 @@
 from os import path
+import bcrypt
 from cryptography.fernet import Fernet
 
 class Encryptor:
