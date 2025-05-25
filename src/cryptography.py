@@ -18,3 +18,9 @@ class Encryptor:
 
     def decrypt_message(token: bytes) -> str:
         return Fernet.decrypt(token).decode()
+    
+    def hash_pwd(password: str) -> hash:
+        bcrypt.hashpw(password, bcrypt.gensalt())
+    
+    def check_pwd(password: str, hashed_password):
+        return bcrypt.checkpw(password, hashed_password)
