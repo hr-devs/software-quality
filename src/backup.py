@@ -1,8 +1,8 @@
 import os
-import shutil
+from shutil import copy
 from datetime import datetime
 
-backup_files = ['private_key.pem', 'public_key.pem', 'unique_meal.db']
+backup_files = ['key.txt', 'urban_mobility.db']
 backup_folder = 'backups'
 
 def backup():
@@ -15,7 +15,7 @@ def backup():
 
     for file in backup_files:
         if os.path.isfile(file):
-            shutil.copy(file, backup_subfolder)
+            copy(file, backup_subfolder)
             print(f"Copied '{file}' to '{backup_folder}'.")
         else:
             print(f"'{file}' is not a valid file.")
@@ -36,7 +36,7 @@ def restore(backup_subfolder):
 
         if os.path.isfile(file_path):
             original_location = file_name
-            shutil.copy(file_path, original_location)
+            copy(file_path, original_location)
             print(f"Restored {file_path}")
 
 def delete_existing_files(file_names, directory):
