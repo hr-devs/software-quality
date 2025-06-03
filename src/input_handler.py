@@ -1,5 +1,7 @@
 # input_handler.py
 
+# TODO: validate users menu input
+
 def get_choice(valid_choices):
     while True:
         choice = input("\nSelect an option: ").strip()
