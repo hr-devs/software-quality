@@ -1,6 +1,6 @@
 # submenu2.py
 
-from base_menu import BaseMenu
+from menus.base_menu import BaseMenu
 
 class SubMenu2:
     def display(self):

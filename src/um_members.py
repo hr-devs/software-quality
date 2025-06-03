@@ -1,6 +1,6 @@
 # main.py
 
-from main_menu import main_menu
+from menus.main_menu import main_menu
 
 def main():
     print("Welcome to the Console Menu Application!")

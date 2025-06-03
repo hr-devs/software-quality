@@ -1,8 +1,8 @@
 # main_menu.py
 
-from base_menu import BaseMenu
-from submenu1 import SubMenu1
-from submenu2 import SubMenu2
+from menus.base_menu import BaseMenu
+from menus.submenu_1 import SubMenu1
+from menus.submenu_2 import SubMenu2
 
 def main_menu():
     menu = BaseMenu("Main Menu", {
