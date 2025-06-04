@@ -1,5 +1,3 @@
-# base_menu.py
-
 from input_handler import get_choice
 
 class BaseMenu:
