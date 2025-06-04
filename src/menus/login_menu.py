@@ -1,5 +1,3 @@
-# submenu1.py
-
 from menus.base_menu import BaseMenu
 from menus.service_engineer_menu import ServiceEngineerMenu
 from menus.system_admin_menu import SystemAdministratorMenu

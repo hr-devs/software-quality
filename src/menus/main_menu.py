@@ -1,5 +1,3 @@
-# main_menu.py
-
 from menus.base_menu import BaseMenu
 from menus.login_menu import LoginMenu
 

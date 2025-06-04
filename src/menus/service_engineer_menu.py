@@ -1,5 +1,3 @@
-# submenu2.py
-
 from menus.base_menu import BaseMenu
 
 class ServiceEngineerMenu:
