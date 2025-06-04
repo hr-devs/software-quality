@@ -73,6 +73,17 @@ def initialize_database():
             );
         """)
         
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS activity_log (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                log_date TEXT NOT NULL,                       -- Format: YYYY-MM-DD
+                log_time TEXT NOT NULL,                       -- Format: HH:MM:SS
+                username TEXT NOT NULL,                       -- e.g., john_m_05, superadmin
+                activity_description TEXT NOT NULL,           -- e.g., "Logged in", "User is deleted"
+                additional_info TEXT                          -- e.g., "Suspicious", "username: mike12"
+            );
+        """)
+        
         connection.commit()
     fetch_all_travellers()
         
