@@ -91,6 +91,7 @@ def initialize_database():
         """)
         
         connection.commit()
+    populate_dummy_data()
     print(fetch_all_travellers())
 
 
@@ -135,4 +136,68 @@ def fetch_all_data():
         cursor.execute("""SELECT * FROM users, roles, travellers, scooters, activity_logs""")
         return cursor.fetchall()
         
+
+def populate_dummy_data():
+    with sqlite3.connect('urban_mobility.db') as connection:
+        cursor = connection.cursor()
         
+        # Clear existing data
+        cursor.execute("DELETE FROM activity_logs")
+        cursor.execute("DELETE FROM scooters")
+        cursor.execute("DELETE FROM travellers")
+        cursor.execute("DELETE FROM users")
+        cursor.execute("DELETE FROM roles")
+        
+        # Insert roles
+        roles_data = [
+            (1, 'super_admin'),
+            (2, 'system_admin'),
+            (3, 'service_engineer'),
+        ]
+        
+        cursor.executemany("INSERT INTO roles (id, role_name) VALUES (?, ?)", roles_data)
+        
+        # Insert users
+        users_data = [
+            ('superadmin', 'hashed_password_123', 1),
+            ('admin_rotterdam', 'hashed_password_456', 2),
+            ('operator_jan', 'hashed_password_789', 3)
+        ]
+        
+        cursor.executemany("INSERT INTO users (username, password, role_id) VALUES (?, ?, ?)", users_data)
+        
+        # Insert travellers
+        travellers_data = [
+            ('Jan', 'de Vries', '1985-03-15', 'male', 'Coolsingel', 42, '3012 AA', 'Rotterdam', 'jan.devries@email.nl', '+31-6-12345678', 'NL123456789'),
+            ('Sarah', 'van der Berg', '1992-07-22', 'female', 'Witte de Withstraat', 15, '3012 BK', 'Rotterdam', 'sarah.vandenberg@email.nl', '+31-6-23456789', 'NL234567890'),
+            ('Mike', 'Thompson', '1988-11-08', 'male', 'Erasmusbrug', 3, '3011 BN', 'Rotterdam', 'mike.thompson@email.com', '+31-6-34567890', '123456789NL')
+        ]
+        
+        cursor.executemany("""INSERT INTO travellers 
+            (first_name, last_name, birthday, gender, street_name, house_number, zip_code, city, email_address, mobile_phone, driving_license_number) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", travellers_data)
+        
+        # Insert scooters
+        scooters_data = [
+            ('Segway', 'Ninebot MAX G30', 'SG2024001ABC', 25, 551, 85.5, 20.0, 90.0, 'Excellent condition', 51.92250, 4.47917, 0, 1245.8, '2024-01-15'),
+            ('NIU', 'KQi3 Pro', 'NIU2024002DEF', 25, 486, 67.2, 15.0, 85.0, 'Recently serviced', 51.91845, 4.48234, 0, 892.3, '2024-02-10'),
+            ('Xiaomi', 'Mi Electric Scooter 3', 'XM2024003GHI', 25, 275, 45.8, 10.0, 80.0, 'Good working order', 51.92456, 4.47652, 0, 654.1, '2024-01-28')
+        ]
+        
+        cursor.executemany("""INSERT INTO scooters 
+            (brand, model, serial_number, top_speed, battery_capacity, soc, soc_min_target, soc_max_target, description, latitude, longitude, out_of_service, mileage, last_maintenance_date) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", scooters_data)
+        
+        # Insert activity logs
+        activity_logs_data = [
+            ('2024-06-04', '08:15:32', 'superadmin', 'Logged in', 'System startup'),
+            ('2024-06-04', '08:16:45', 'superadmin', 'Database backup created', 'Scheduled backup'),
+            ('2024-06-04', '09:23:12', 'admin_rotterdam', 'Logged in', 'Morning shift start')
+        ]
+        
+        cursor.executemany("""INSERT INTO activity_logs 
+            (log_date, log_time, username, activity_description, additional_info) 
+            VALUES (?, ?, ?, ?, ?)""", activity_logs_data)
+        
+        connection.commit()
+        print("Database initialized and populated with dummy data successfully!")
