@@ -4,17 +4,20 @@ import os
 def initialize_database():
     with sqlite3.connect('urban_mobility.db') as connection:
         cursor = connection.cursor()
-        
-        # Create tables
-        
+
+        #users
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-                role_name TEXT NOT NULL
+                       
+                username TEXT NOT NULL,
+                password TEXT NOT NULL,
+                       
+                role_id INTEGER NOT NULL  -- link with roles table
             );
         """)
         
+        # roles
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS roles (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -23,6 +26,7 @@ def initialize_database():
             );
         """)
 
+        # travellers
         cursor.execute(
             """CREATE TABLE IF NOT EXISTS travellers (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,8 +50,9 @@ def initialize_database():
         """)
         
         # specific details can only be eddited by specific role of user
+        # scooters
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS scooter (
+            CREATE TABLE IF NOT EXISTS scooters (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
 
                 brand TEXT NOT NULL,                            -- e.g., Segway, NIU
@@ -73,8 +78,9 @@ def initialize_database():
             );
         """)
         
+        # activity_log
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS activity_log (
+            CREATE TABLE IF NOT EXISTS activity_logs (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 log_date TEXT NOT NULL,                       -- Format: YYYY-MM-DD
                 log_time TEXT NOT NULL,                       -- Format: HH:MM:SS
@@ -85,13 +91,48 @@ def initialize_database():
         """)
         
         connection.commit()
-    fetch_all_travellers()
-        
-# prints data from database, DEBUGGING
-def fetch_all_travellers():
-    with sqlite3.connect("urban_mobility.db") as connection:
+    print(fetch_all_travellers())
+
+
+def fetch_all_users():
+    with sqlite3.connect('urban_mobility.db') as connection:
         cursor = connection.cursor()
-        cursor.execute("""
-            SELECT * FROM travellers""")
-        print(cursor.fetchall())
-   
+        cursor.execute("""SELECT * FROM users""")
+        return cursor.fetchall()
+    
+
+def fetch_all_roles():
+    with sqlite3.connect('urban_mobility.db') as connection:
+        cursor = connection.cursor()
+        cursor.execute("""SELECT * FROM roles""")
+        return cursor.fetchall()
+    
+
+def fetch_all_travellers():
+    with sqlite3.connect('urban_mobility.db') as connection:
+        cursor = connection.cursor()
+        cursor.execute("""SELECT * FROM travellers""")
+        return cursor.fetchall()
+    
+
+def fetch_all_scooters():
+    with sqlite3.connect('urban_mobility.db') as connection:
+        cursor = connection.cursor()
+        cursor.execute("""SELECT * FROM scooters""")
+        return cursor.fetchall()
+        
+
+def fetch_all_activity_logs():
+    with sqlite3.connect('urban_mobility.db') as connection:
+        cursor = connection.cursor()
+        cursor.execute("""SELECT * FROM activity_logs""")
+        return cursor.fetchall()
+    
+
+def fetch_all_data():
+    with sqlite3.connect('urban_mobility.db') as connection:
+        cursor = connection.cursor()
+        cursor.execute("""SELECT * FROM users, roles, travellers, scooters, activity_logs""")
+        return cursor.fetchall()
+        
+        
