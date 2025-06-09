@@ -19,6 +19,12 @@ class UserRepository():
                 );
             """)
             conn.commit()
+
+    def search_username(self, username):
+        with self.db_connection.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM users WHERE username = (?)", (username,))
+            return cursor.fetchone()
     
     def fetch_all(self):
         with self.db_connection.get_connection() as conn:
