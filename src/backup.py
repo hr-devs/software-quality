@@ -31,8 +31,6 @@ class Backup:
             print(f"Backup folder '{backup_subfolder}' not found!")
             return
 
-        Backup.delete_existing_files(self.backup_files, '')
-
         for file_name in os.listdir(path):
             file_path = os.path.join(path, file_name)
 
