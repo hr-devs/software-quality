@@ -1,4 +1,4 @@
-import input_handler
+from input_handler import UserInput
 
 class BaseMenu:
     def __init__(self, title, options):
@@ -10,7 +10,7 @@ class BaseMenu:
             print(f"\n==== {self.title} ====")
             for key, (desc, _) in self.options.items():
                 print(f"{key}. {desc}")
-            choice = input_handler.input.get_menu_choice(self.options.keys())
+            choice = UserInput.get_menu_choice(self.options.keys())
             _, action = self.options[choice]
             if action:
                 result = action()
