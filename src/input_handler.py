@@ -1,7 +1,7 @@
 import datetime
 import re
 
-class input:
+class UserInput:
     def get_menu_choice(valid_choices): # whitelisted with specified valid choices
         while True:
             choice = input("\nSelect an option: ").strip()
