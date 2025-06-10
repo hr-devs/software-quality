@@ -55,9 +55,9 @@ class DatabaseManager:
             
             # Insert users
             users_data = [
-                (Encryptor.encrypt_data('sup_adm01'), Encryptor.hash_pwd('SuperAdmin#2024!'), 1),
-                (Encryptor.encrypt_data('sys_adm02'), Encryptor.hash_pwd('SysControl&Pass9'), 2),
-                (Encryptor.encrypt_data('svc_eng03'), Encryptor.hash_pwd('Engineer@Service7'), 3)
+                (Encryptor.encrypt_str('sup_adm01'), Encryptor.hash_pwd('SuperAdmin#2024!'), 1),
+                (Encryptor.encrypt_str('sys_adm02'), Encryptor.hash_pwd('SysControl&Pass9'), 2),
+                (Encryptor.encrypt_str('svc_eng03'), Encryptor.hash_pwd('Engineer@Service7'), 3)
             ]
             
             self.user_repo.insert_users( users_data)
@@ -82,9 +82,9 @@ class DatabaseManager:
             
             # Insert activity logs
             activity_logs_data = [
-                ('2024-06-04', '08:15:32', 'superadmin', 'Logged in', 'System startup'),
-                ('2024-06-04', '08:16:45', 'superadmin', 'Database backup created', 'Scheduled backup'),
-                ('2024-06-04', '09:23:12', 'admin_rotterdam', 'Logged in', 'Morning shift start')
+                ('2024-06-04', '08:15:32', 'superadmin', 'Logged in', 'System startup', 0, 0),
+                ('2024-06-04', '08:16:45', 'superadmin', 'Database backup created', 'Scheduled backup', 0, 0),
+                ('2024-06-04', '09:23:12', 'admin_rotterdam', 'Logged in', 'Morning shift start', 0, 0)
             ]
             
             self.activity_log_repo.insert_activity_logs(activity_logs_data)
@@ -94,7 +94,9 @@ class DatabaseManager:
             raise
 
         try:
-            print("Sample travellers data:", self.user_repo.fetch_all())
+            print("")
+            #print(self.activity_log_repo.fetch_all())
+            
         except Exception as e:
             print("Error fetching data")
             raise

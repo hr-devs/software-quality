@@ -1,3 +1,4 @@
+from data_transfer_objects import ActivityLog
 from database.database_connection import DatabaseConnection
 from typing import List, Tuple
 
@@ -15,7 +16,9 @@ class ActivityLogRepository():
                     log_time TEXT NOT NULL,                       -- Format: HH:MM:SS
                     username TEXT NOT NULL,                       -- e.g., john_m_05, superadmin
                     activity_description TEXT NOT NULL,           -- e.g., "Logged in", "User is deleted"
-                    additional_info TEXT                          -- e.g., "Suspicious", "username: mike12"
+                    additional_info TEXT,                          -- e.g., "username: mike12"
+                    suspicious INTEGER NOT NULL,
+                    seen INTEGER NOT NULL
                 );
             """)
             conn.commit()
@@ -37,7 +40,20 @@ class ActivityLogRepository():
             cursor = conn.cursor()
             cursor.executemany("""
                 INSERT INTO activity_logs 
-                (log_date, log_time, username, activity_description, additional_info) 
-                VALUES (?, ?, ?, ?, ?)
+                (log_date, log_time, username, activity_description, additional_info, suspicious, seen) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)
             """, logs_data)
+            conn.commit()
+
+    def insert_activity_log(self, log: ActivityLog):
+        with self.db_connection.get_connection() as conn:
+            cursor = conn.cursor()
+            
+            cursor.execute("""
+                INSERT INTO activity_logs 
+                (log_date, log_time, username, activity_description, additional_info, suspicious, seen) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (log.log_date, log.log_time, log.username, 
+                log.activity_description, log.additional_info, 
+                log.suspicious, log.seen))
             conn.commit()
