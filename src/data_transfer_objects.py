@@ -52,3 +52,5 @@ class ActivityLog:
     username: str = ""
     activity_description: str = ""
     additional_info: str = ""
+    suspicious: int = 0
+    seen: int = 0

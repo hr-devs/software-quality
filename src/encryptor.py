@@ -19,10 +19,16 @@ class Encryptor:
             return f.read()
 
     @staticmethod
-    def encrypt_data(data: str, key_filename="key.txt") -> bytes:
+    def encrypt_str(data: str, key_filename="key.txt") -> bytes:
         key = Encryptor.load_key(key_filename)
         fernet = Fernet(key)
         return fernet.encrypt(data.encode())
+    
+    @staticmethod
+    def encrypt_int(data: int, key_filename="key.txt") -> bytes:
+        key = Encryptor.load_key(key_filename)
+        fernet = Fernet(key)
+        return fernet.encrypt(str(data).encode())
 
     @staticmethod
     def decrypt_data(token: bytes, key_filename="key.txt") -> str:
