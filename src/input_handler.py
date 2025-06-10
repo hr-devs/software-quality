@@ -64,4 +64,4 @@ class UserInput:
                 userInput = input(inputSentence).strip()
                 if passwordPattern.fullmatch(userInput):
                     return userInput
-                print("Password must be 12-30 characters and include lowercase, uppercase, number, and special character.")
+                print("Password must be 12-30 characters and include lowercase, uppercase, number, and special character which are: ~!@#$%&_-+=`|\(){}[]:;'<>,.?/.")
