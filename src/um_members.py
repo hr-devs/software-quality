@@ -16,11 +16,11 @@ def main():
     
     activity_repo = ActivityLogRepository(db_connection)
     logger = Logger(activity_repo)
-    logger.log_activity("test", "sus activity", "extra info", True)
+    #logger.log_activity("test", "sus activity", "extra info", True)
 
-    print(db_manager.activity_log_repo.fetch_all())
+    #print(db_manager.activity_log_repo.fetch_all())
 
-    main_menu()
+    main_menu(db_connection)
 
 if __name__ == "__main__":
     main()

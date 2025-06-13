@@ -24,7 +24,7 @@ class UserRepository():
         with self.db_connection.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM users")
-            return cursor.fetchall()
+            return cursor.fetchall()    
         
     def clear_all(self):
         with self.db_connection.get_connection() as conn:
