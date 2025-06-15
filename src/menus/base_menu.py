@@ -18,3 +18,17 @@ class BaseMenu:
                     break
                 elif result == "exit":
                     exit()
+
+    def display(self, options):
+        while True:
+            print(f"\n==== {self.title} ====")
+            for key, (desc, _) in options.items():
+                print(f"{key}. {desc}")
+            choice = UserInput.get_menu_choice(options.keys())
+            _, action = options[choice]
+            if action:
+                result = action()
+                if result == "back":
+                    break
+                elif result == "exit":
+                    exit()

@@ -13,19 +13,24 @@ class Login:
         self.db_connection = db_connection
         self.user_repository = UserRepository(db_connection)
         self.current_user = None
+        self.username = None
+        self.password = None
 
-    #TODO: send password and username to database (encrypted?)
-
-    def login(self):
-        #username, password = self.get_username_and_password()
-        self.authenticate(username_input="sup_adm01", password_input="SuperAdmin#2024!")
-
-    def get_username_and_password(self): 
+    def login(self):#, username, password): TODO should be added after debugging
+        self.current_user = self.authenticate(username_input="sup_adm01", password_input="SuperAdmin#2024!")
+        if (self.current_user != None):
+            self.determine_menu(self.current_user.role_id)
+        print(self.current_user)
+    
+    def set_username(self):
         username = UserInput.get_data_input("Username: ", "Username")
+        self.username = username
+    
+    def set_password(self):
         password = UserInput.get_data_input("Password: ", "Password")
-        return username, password
+        self.password = password
         
-    def authenticate(self, username_input: str, password_input: str) -> bool:
+    def authenticate(self, username_input: str, password_input: str):
         all_user_data: List[Tuple] = self.user_repository.fetch_all()
 
         for user in all_user_data:
@@ -33,32 +38,15 @@ class Login:
                 user_match = user
                 break
 
-        if (user_match != None): #check_hashed_data geeft error
+        if (user_match != None):
             if (Encryptor.check_hashed_data(password_input ,user_match[2])):
-                user_dto = User(user[1], user[2], user[3])
-                return True
+                return User(user[1], user[2], user[3])
             else:
-                return False
+                return None
 
         else:
-            return False
+            return None
         
-
-
-
-        # hashed_username = Encryptor.hash_str(username_input)
-        # user = self.user_repository.fetch_user_by_hash(hashed_username)
-        
-        # if(Encryptor.check_hashed_data(password_input, user[3])):
-        #     role_menu = self.determine_menu(user[4])
-        #     user_dto = User(user[0], user[1], user[2])
-
-        # role_menu(user_dto)
-
-
-        # This is where you'd use self.user_repository to check credentials
-        # TODO: Hash password and verify against database
-        pass
 
     def determine_menu(self, role_id: int):
         if role_id == 1:
