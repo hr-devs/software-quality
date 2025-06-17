@@ -19,27 +19,30 @@ class Encryptor:
             return f.read()
 
     @staticmethod
-    def encrypt_str(data: str, key_filename="key.txt") -> bytes:
+    def encrypt_str(data: str, key_filename="key.txt") -> str:
         key = Encryptor.load_key(key_filename)
         fernet = Fernet(key)
-        return fernet.encrypt(data.encode())
+        encrypted_data = fernet.encrypt(data.encode())
+        return encrypted_data.decode()
     
     @staticmethod
-    def encrypt_int(data: int, key_filename="key.txt") -> bytes:
+    def encrypt_int(data: int, key_filename="key.txt") -> str:
         key = Encryptor.load_key(key_filename)
         fernet = Fernet(key)
-        return fernet.encrypt(str(data).encode())
+        encrypted_data = fernet.encrypt(str(data).encode())
+        return encrypted_data.decode()
 
     @staticmethod
-    def decrypt_data(token: bytes, key_filename="key.txt") -> str:
+    def decrypt_data(token: str, key_filename="key.txt") -> str:
         key = Encryptor.load_key(key_filename)
         fernet = Fernet(key)
         return fernet.decrypt(token).decode()
     
     @staticmethod
-    def hash_pwd(password: str) -> bytes:
-        return bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+    def hash_str(password: str) -> str:
+        hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+        return hashed_password.decode()
     
     @staticmethod
-    def check_pwd(password: str, hashed_password: bytes) -> bool:
-        return bcrypt.checkpw(password.encode(), hashed_password)
+    def check_hashed_data(password: str, hashed_password: str) -> bool:
+        return bcrypt.checkpw(password.encode(), hashed_password.encode())

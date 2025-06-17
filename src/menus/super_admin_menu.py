@@ -1,3 +1,4 @@
+from data_transfer_objects import User
 from menus.base_menu import BaseMenu
 from menus.backup_menu import BackupMenu
 from menus.service_engineer_manager_menu import ServiceEngineerManagerMenu
@@ -7,8 +8,11 @@ from menus.scooter_menu import ScooterMenu
 
 
 class SuperAdministratorMenu:
-    def display(self):
-        menu = BaseMenu("Super Administrator Menu", {
+    def __init__(self, user: User):
+        self.user = user
+
+    def get_options(self):
+        return {
             "1": ("Update your password", self.action),
             "2": ("Search Scooter", self.action),
             "3": ("Update Scooter attributes", self.action),
@@ -20,7 +24,10 @@ class SuperAdministratorMenu:
             "9": ("Traveller Menu", TravellerMenu().display),
             "10": ("Backup Menu", BackupMenu().display),
             "0": ("Back", lambda: "back")
-        })
+        }
+
+    def display(self):
+        menu = BaseMenu("Super Administrator Menu", self.get_options)
         menu.display()
 
     def action(self):
