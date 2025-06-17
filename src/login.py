@@ -7,6 +7,7 @@ from input_handler import UserInput
 from menus.service_engineer_menu import ServiceEngineerMenu
 from menus.super_admin_menu import SuperAdministratorMenu
 from menus.system_admin_menu import SystemAdministratorMenu
+from enums import Role
 
 class Login:
     def __init__(self, db_connection: DatabaseConnection):
@@ -19,8 +20,8 @@ class Login:
     def login(self):#, username, password): TODO should be added after debugging
         self.current_user = self.authenticate(username_input="sup_adm01", password_input="SuperAdmin#2024!")
         if (self.current_user != None):
-            self.determine_menu(self.current_user.role_id)
-        print(self.current_user)
+            self.determine_menu(self.current_user)
+        
     
     def set_username(self):
         username = UserInput.get_data_input("Username: ", "Username")
@@ -32,6 +33,7 @@ class Login:
         
     def authenticate(self, username_input: str, password_input: str):
         all_user_data: List[Tuple] = self.user_repository.fetch_all()
+        user_match = None
 
         for user in all_user_data:
             if (Encryptor.decrypt_data(user[1]) == username_input):
@@ -48,14 +50,15 @@ class Login:
             return None
         
 
-    def determine_menu(self, role_id: int):
-        if role_id == 1:
-            SuperAdministratorMenu().display
-        elif role_id == 2:
-            SystemAdministratorMenu().display
-        elif role_id == 3:
-            ServiceEngineerMenu().display
+    def determine_menu(self, user: User):
+        if user.role_id == Role.SUPER_ADMIN:
+            SuperAdministratorMenu(user).display()
+        elif user.role_id == Role.SYSTEM_ADMIN:
+            SystemAdministratorMenu(user).display()
+        elif user.role_id == Role.SERVICE_ENGINEER:
+            ServiceEngineerMenu(user).display()
         else:
-            None
+            print("Unknown role ID. Access denied.")
+
 
 
