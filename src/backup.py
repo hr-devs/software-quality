@@ -1,5 +1,4 @@
 import os
-from shutil import copy
 from datetime import datetime
 import zipfile
 from database.database_connection import DatabaseConnection

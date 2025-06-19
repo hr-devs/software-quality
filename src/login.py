@@ -47,6 +47,8 @@ class Login:
                 user_match = user
                 break
 
+        all_user_data = None
+
         if (user_match != None):
             if (Encryptor.check_hashed_data(password_input ,user_match[2])):
                 return User(user[1], user[2], user[3])
@@ -59,11 +61,11 @@ class Login:
 
     def determine_menu(self, user: User):
         if user.role_id == Role.SUPER_ADMIN.value:
-            SuperAdministratorMenu(user).display()
+            SuperAdministratorMenu(user, self.db_connection).display()
         elif user.role_id == Role.SYSTEM_ADMIN.value:
-            SystemAdministratorMenu(user).display()
+            SystemAdministratorMenu(user, self.db_connection).display()
         elif user.role_id == Role.SERVICE_ENGINEER.value:
-            ServiceEngineerMenu(user).display()
+            ServiceEngineerMenu(user, self.db_connection).display()
         else:
             print("Unknown role ID. Access denied.")
 

@@ -1,5 +1,7 @@
 from database.database_connection import DatabaseConnection
 from typing import List, Tuple
+from encryptor import Encryptor
+from enums import Role
 
 class UserRepository():
     def __init__(self, db_connection: DatabaseConnection):
@@ -24,7 +26,27 @@ class UserRepository():
         with self.db_connection.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT * FROM users")
-            return cursor.fetchall()    
+            return cursor.fetchall()
+        
+    def fetch_all_usernames_and_roles(self):
+        with self.db_connection.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT username, role_id FROM users")
+            return cursor.fetchall()
+        
+    def get_usernames_and_roles(self):
+        usernames_and_roles = {}
+        usernames_and_roles_list = self.fetch_all_usernames_and_roles()
+        print(usernames_and_roles_list)
+
+        for index, username_and_role in enumerate(usernames_and_roles_list):
+            usernames_and_roles[str(index + 1)] = (
+                f"username: {Encryptor.decrypt_data(username_and_role[0])} | role: {Role(username_and_role[1]).name}",
+                lambda b=username_and_role: "back"
+            )
+
+        usernames_and_roles["0"] = ("Back", lambda: "back")
+        return usernames_and_roles
         
     def clear_all(self):
         with self.db_connection.get_connection() as conn:

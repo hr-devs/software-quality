@@ -1,5 +1,5 @@
-import sqlite3
 from database.database_connection import DatabaseConnection
+from database.repositories.restore_codes_repository import RestoreCodesRepository
 from encryptor import Encryptor
 from database.repositories.activity_log_repository import ActivityLogRepository
 from database.repositories.role_repository import RoleRepository
@@ -17,6 +17,7 @@ class DatabaseManager:
         self.traveller_repo = TravellerRepository(self.db_connection)
         self.scooter_repo = ScooterRepository(self.db_connection)
         self.activity_log_repo = ActivityLogRepository(self.db_connection)
+        self.restore_codes_repo = RestoreCodesRepository(self.db_connection)
     
     def initialize_database(self):
         # Using the repos to create all tables instead of 1 big query
@@ -27,6 +28,7 @@ class DatabaseManager:
             self.traveller_repo.create_table()
             self.scooter_repo.create_table()
             self.activity_log_repo.create_table()
+            self.restore_codes_repo.create_table()
             
             self.populate_dummy_data()
             print("Database initialized successfully!")
@@ -43,6 +45,7 @@ class DatabaseManager:
             self.traveller_repo.clear_all()
             self.scooter_repo.clear_all()
             self.activity_log_repo.clear_all()
+            self.restore_codes_repo.clear_all()
             
             # Populate roles
             roles_data = [
@@ -88,6 +91,12 @@ class DatabaseManager:
             ]
             
             self.activity_log_repo.insert_activity_logs(activity_logs_data)
+
+            restore_codes_data = [
+                ('2024-06-04', 'superadmin', 1, 0, 0)
+            ]
+
+            self.restore_codes_repo.insert_restore_codes(restore_codes_data)
 
         except Exception as e:
             print(f"Error populating dummy data: {e}")
