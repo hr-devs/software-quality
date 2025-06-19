@@ -1,44 +1,73 @@
 import os
 from shutil import copy
 from datetime import datetime
+import zipfile
+from database.database_connection import DatabaseConnection
+from database.repositories.activity_log_repository import ActivityLogRepository
+from database.repositories.restore_codes_repository import RestoreCodesRepository
+from database.repositories.user_repository import UserRepository
 
 
 class Backup:
-    backup_files = ['key.txt', 'urban_mobility.db']
-    backup_folder = 'backups'
+    def __init__(self, db_connection: DatabaseConnection):
+        self.db_connection = db_connection
+        self.restore_codes_repo = RestoreCodesRepository(db_connection)
+        self.users_repo = UserRepository(db_connection)
+        self.activity_logs_repo = ActivityLogRepository(db_connection)
+        self.backup_files = ['key.txt', 'urban_mobility.db']
+        self.backup_folder = 'backups'
 
     def backup(self):
         if not os.path.exists(self.backup_folder):
             os.makedirs(self.backup_folder)
 
         timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-        backup_subfolder = f'backups/backup_{timestamp}'
-        os.makedirs(backup_subfolder)
+        zip_path = os.path.join(self.backup_folder, f'backup_{timestamp}.zip')
 
-        for file in self.backup_files:
-            if os.path.isfile(file):
-                copy(file, backup_subfolder)
-                print(f"Copied '{file}' to '{self.backup_folder}'.")
-            else:
-                print(f"'{file}' is not a valid file.")
+        with zipfile.ZipFile(zip_path, 'w') as zipf:
+            for file in self.backup_files:
+                if os.path.isfile(file):
+                    zipf.write(file)
+                    print(f"Added '{file}' to '{zip_path}'.")
+                else:
+                    print(f"'{file}' is not a valid file.")
 
-        return backup_subfolder
+        return zip_path
 
-    def restore(self, backup_subfolder):
-        path = f'backups/{backup_subfolder}'
+    def restore(self, zip_filename):
+        zip_path = os.path.join(self.backup_folder, zip_filename)
 
-        if not os.path.exists(path) or not os.path.isdir(path):
-            print(f"Backup folder '{backup_subfolder}' not found!")
+        if not os.path.exists(zip_path) or not zipfile.is_zipfile(zip_path):
+            print(f"Backup file '{zip_filename}' not found or invalid!")
             return
+        
+        # Storing all data outside scope of backup + clearing those tables
+        
+        restore_codes = self.restore_codes_repo.fetch_all()
+        self.restore_codes_repo.clear_all()
 
-        for file_name in os.listdir(path):
-            file_path = os.path.join(path, file_name)
+        users = self.users_repo.fetch_all()
+        self.users_repo.clear_all()
 
-            if os.path.isfile(file_path):
-                original_location = file_name
-                copy(file_path, original_location)
-                print(f"Restored {file_path}")
+        activity_logs = self.activity_logs_repo.fetch_all()
+        self.activity_logs_repo.clear_all()
 
+        with zipfile.ZipFile(zip_path, 'r') as zipf:
+            zipf.extractall()
+            for name in zipf.namelist():
+                print(f"Restored {name}")
+
+        # Putting saved data back into database 
+
+        self.restore_codes_repo.insert_restore_codes(restore_codes)
+        self.users_repo.insert_users(users)
+        self.activity_logs_repo.insert_activity_logs(activity_logs)
+
+        # Logging user out, out of precausion
+
+        print("You will now be logged out!")
+        exit()
+        
     def delete_existing_files(file_names, directory):
         for file_name in file_names:
             file_path = os.path.join(directory, file_name)
@@ -58,5 +87,19 @@ class Backup:
             backup_list.append(folder)
 
         return backup_list
+    
+    def get_restore_options(self):
+        restore_options = {}
+        backup_list = self.get_backup_list()
+
+        for index, backup_name in enumerate(backup_list):
+            restore_options[str(index + 1)] = (
+                f"Restore {backup_name}",
+                lambda b=backup_name: self.restore(b)
+            )
+
+        restore_options["0"] = ("Back", lambda: "back")
+        return restore_options
+
 
 

@@ -1,3 +1,4 @@
+from backup import Backup
 from data_transfer_objects import User
 from menus.base_menu import BaseMenu
 from menus.backup_menu import BackupMenu
@@ -10,6 +11,7 @@ from menus.scooter_menu import ScooterMenu
 class SuperAdministratorMenu:
     def __init__(self, user: User):
         self.user = user
+        self.backup = Backup()
 
     def get_options(self):
         return {
@@ -22,7 +24,7 @@ class SuperAdministratorMenu:
             "7": ("System Administrator Menu", SystemAdminManagerMenu().display),
             "8": ("Scooter Menu", ScooterMenu().display),
             "9": ("Traveller Menu", TravellerMenu().display),
-            "10": ("Backup Menu", BackupMenu().display),
+            "10": ("Backup Menu", BackupMenu(self.backup).display),
             "0": ("Back", lambda: "back")
         }
 

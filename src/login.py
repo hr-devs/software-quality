@@ -32,6 +32,13 @@ class Login:
         self.password = password
         
     def authenticate(self, username_input: str, password_input: str):
+        if (username_input == "super_admin" and password_input == "Admin_123?"):
+            return User(
+                username="super_admin",
+                password="Admin_123?",
+                role_id=1
+            )
+
         all_user_data: List[Tuple] = self.user_repository.fetch_all()
         user_match = None
 
@@ -51,11 +58,11 @@ class Login:
         
 
     def determine_menu(self, user: User):
-        if user.role_id == Role.SUPER_ADMIN:
+        if user.role_id == Role.SUPER_ADMIN.value:
             SuperAdministratorMenu(user).display()
-        elif user.role_id == Role.SYSTEM_ADMIN:
+        elif user.role_id == Role.SYSTEM_ADMIN.value:
             SystemAdministratorMenu(user).display()
-        elif user.role_id == Role.SERVICE_ENGINEER:
+        elif user.role_id == Role.SERVICE_ENGINEER.value:
             ServiceEngineerMenu(user).display()
         else:
             print("Unknown role ID. Access denied.")
