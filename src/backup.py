@@ -1,10 +1,15 @@
 import os
 from datetime import datetime
+import random
+import string
+from typing import List, Tuple
 import zipfile
+from data_transfer_objects import RestoreCode
 from database.database_connection import DatabaseConnection
 from database.repositories.activity_log_repository import ActivityLogRepository
 from database.repositories.restore_codes_repository import RestoreCodesRepository
 from database.repositories.user_repository import UserRepository
+from encryptor import Encryptor
 
 
 class Backup:
@@ -100,5 +105,33 @@ class Backup:
         restore_options["0"] = ("Back", lambda: "back")
         return restore_options
 
+    def get_restore_code_options(self, function):
+        restore_options = {}
+        backup_list = self.get_backup_list()
+
+        for index, backup_name in enumerate(backup_list):
+            restore_options[str(index + 1)] = (
+                f"Backup {backup_name}",
+                lambda b=backup_name: function(b)
+            )
+
+        restore_options["0"] = ("Back", lambda: "back")
+        return restore_options
+
+    def generate_restore_code(self, username, role_id, backup):
+        chars = string.ascii_uppercase + string.digits
+        all_restore_code_data: List[Tuple] = self.restore_codes_repo.fetch_all()
+        all_codes = []
+        for restore_code in all_restore_code_data:
+            all_codes.append(Encryptor.decrypt_data(restore_code[1]))
+        
+        restore_code = RestoreCode("XXXX", backup, datetime.now().isoformat(), username, role_id, False, False)
+
+        while True:
+            code = ''.join(random.choices(chars, k=4))
+            if code not in all_codes:
+                restore_code.restore_code = code
+                self.restore_codes_repo.insert_restore_code(restore_code)
+                return code
 
 

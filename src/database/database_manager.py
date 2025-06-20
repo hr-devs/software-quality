@@ -80,19 +80,11 @@ class DatabaseManager:
             self.activity_log_repo.insert_activity_logs(activity_logs_data)
 
             restore_codes_data = [
-                ('2024-06-04', 'superadmin', 1, 0, 0)
+                (Encryptor.encrypt_str('XXXX'), Encryptor.encrypt_str('test'),'2024-06-04', Encryptor.encrypt_str('superadmin'), 1, 0, 0)
             ]
 
             self.restore_codes_repo.insert_restore_codes(restore_codes_data)
 
         except Exception as e:
             print(f"Error populating dummy data: {e}")
-            raise
-
-        try:
-            print("")
-            #print(self.activity_log_repo.fetch_all())
-            
-        except Exception as e:
-            print("Error fetching data")
             raise
