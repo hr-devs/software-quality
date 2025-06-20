@@ -19,7 +19,7 @@ class Login:
 
     def login(self):#, username, password): TODO should be added after debugging
         self.current_user = self.authenticate(username_input="sup_adm01", password_input="SuperAdmin#2024!")
-        self.current_user = self.authenticate(username_input="svc_eng03", password_input="Engineer@Service9")
+        #self.current_user = self.authenticate(username_input="svc_eng03", password_input="Engineer@Service9")
         if (self.current_user != None):
             self.determine_menu(self.current_user)
         
