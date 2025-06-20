@@ -74,4 +74,12 @@ class UserRepository():
                 users_data
             )
             conn.commit()
-    
+            
+    def update_password(self, id : int, new_password : str):
+        with self.db_connection.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                "UPDATE users SET password = ? WHERE id = ?",
+                (new_password, id)
+            )
+            conn.commit()
