@@ -35,6 +35,21 @@ class ScooterRepository():
                 );
             """)
             conn.commit()
+            
+    def add_scooter(self, scooter_data: Tuple):
+        with self.db_connection.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO scooters (
+                    brand, model, serial_number,
+                    top_speed, battery_capacity, soc,
+                    soc_min_target, soc_max_target,
+                    description,
+                    latitude, longitude,
+                    out_of_service, mileage, last_maintenance_date
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, scooter_data)
+            conn.commit()
     
     def fetch_all(self):
         with self.db_connection.get_connection() as conn:

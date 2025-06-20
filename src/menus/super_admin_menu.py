@@ -23,8 +23,8 @@ class SuperAdministratorMenu:
             "4": ("See logs", self.action),
             "5": ("Service Engineer Menu", ServiceEngineerManagerMenu(self.db_connection, self.user).display),
             "6": ("System Administrator Menu", SystemAdminManagerMenu(self.db_connection, self.user).display),
-            "7": ("Scooter Menu", ScooterMenu().display),
-            "8": ("Traveller Menu", TravellerMenu().display),
+            "7": ("Scooter Menu", ScooterMenu(self.db_connection, self.user).display),
+            "8": ("Traveller Menu", TravellerMenu(self.db_connection, self.user).display),
             "9": ("Backup Menu", BackupMenu(self.db_connection, self.user).display),
             "0": ("Back", lambda: "back")
         }
