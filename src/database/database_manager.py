@@ -2,7 +2,6 @@ from database.database_connection import DatabaseConnection
 from database.repositories.restore_codes_repository import RestoreCodesRepository
 from encryptor import Encryptor
 from database.repositories.activity_log_repository import ActivityLogRepository
-from database.repositories.role_repository import RoleRepository
 from database.repositories.scooter_repository import ScooterRepository
 from database.repositories.traveller_repository import TravellerRepository
 from database.repositories.user_repository import UserRepository
@@ -13,7 +12,6 @@ class DatabaseManager:
         
         # Initialize repos so we can use them in this class
         self.user_repo = UserRepository(self.db_connection)
-        self.role_repo = RoleRepository(self.db_connection)
         self.traveller_repo = TravellerRepository(self.db_connection)
         self.scooter_repo = ScooterRepository(self.db_connection)
         self.activity_log_repo = ActivityLogRepository(self.db_connection)
@@ -24,7 +22,6 @@ class DatabaseManager:
         # ERror if something goes wrong
         try:
             self.user_repo.create_table()
-            self.role_repo.create_table()
             self.traveller_repo.create_table()
             self.scooter_repo.create_table()
             self.activity_log_repo.create_table()
@@ -41,26 +38,16 @@ class DatabaseManager:
         try:
             # Clear data
             self.user_repo.clear_all()
-            self.role_repo.clear_all()
             self.traveller_repo.clear_all()
             self.scooter_repo.clear_all()
             self.activity_log_repo.clear_all()
             self.restore_codes_repo.clear_all()
             
-            # Populate roles
-            roles_data = [
-                (1, 'super_admin'),
-                (2, 'system_admin'),
-                (3, 'service_engineer'),
-            ]
-            
-            self.role_repo.insert_roles(roles_data)
-            
             # Insert users
             users_data = [
                 (Encryptor.encrypt_str('sup_adm01'), Encryptor.hash_str('SuperAdmin#2024!'), 1),
                 (Encryptor.encrypt_str('sys_adm02'), Encryptor.hash_str('SysControl&Pass9'), 2),
-                (Encryptor.encrypt_str('svc_eng03'), Encryptor.hash_str('Engineer@Service7'), 3)
+                (Encryptor.encrypt_str('svc_eng03'), Encryptor.hash_str('Engineer@Service9'), 3)
             ]
             
             self.user_repo.insert_users( users_data)
