@@ -58,7 +58,7 @@ class TravellerMenu:
         menu = BaseMenu("Select a traveller to update", lambda: traveller_dict)
         selected_id = menu.display()
 
-        if selected_id == "back":
+        if selected == "back" or selected not in traveller_dict:
             return
 
         traveller_id = traveller_dict[selected_id][1]
@@ -104,7 +104,7 @@ class TravellerMenu:
         menu = BaseMenu("Select a traveller to delete", lambda: traveller_dict)
         selected_id = menu.display()
 
-        if selected_id == "back":
+        if selected_id == "back" or selected_id not in traveller_dict:
             return
 
         traveller_id = traveller_dict[selected_id][1]
