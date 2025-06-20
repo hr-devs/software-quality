@@ -1,3 +1,4 @@
+from data_transfer_objects import User
 from database.database_connection import DatabaseConnection
 from typing import List, Tuple
 from encryptor import Encryptor
@@ -49,7 +50,6 @@ class UserRepository():
     def get_usernames_and_roles(self):
         usernames_and_roles = {}
         usernames_and_roles_list = self.fetch_all_usernames_and_roles()
-        print(usernames_and_roles_list)
 
         for index, username_and_role in enumerate(usernames_and_roles_list):
             usernames_and_roles[str(index + 1)] = (
@@ -59,6 +59,33 @@ class UserRepository():
 
         usernames_and_roles["0"] = ("Back", lambda: "back")
         return usernames_and_roles
+    
+    def get_service_engineers_options(self, function):
+        service_engineers = {}
+        service_engineers_list = self.fetch_service_engineers()
+
+        for index, service_engineer in enumerate(service_engineers_list):
+            service_engineers[str(index + 1)] = (
+                f"username: {Encryptor.decrypt_data(service_engineer[0])} | role: {Role(service_engineer[1]).name}",
+                lambda se=service_engineer: function(se)
+            )
+
+        service_engineers["0"] = ("Back", lambda: "back")
+        return service_engineers
+    
+    def get_system_administrators_options(self, function):
+        system_administrators = {}
+        system_administrators_list = self.fetch_service_engineers()
+
+        for index, system_administrator in enumerate(system_administrators_list):
+            system_administrators[str(index + 1)] = (
+                f"username: {Encryptor.decrypt_data(system_administrator[0])} | role: {Role(system_administrator[1]).name}",
+                lambda sa=system_administrator: function(sa)
+            )
+
+        system_administrators["0"] = ("Back", lambda: "back")
+        return system_administrators
+
         
     def clear_all(self):
         with self.db_connection.get_connection() as conn:
