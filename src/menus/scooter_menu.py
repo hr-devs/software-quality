@@ -20,9 +20,6 @@ class ScooterMenu:
             "3": ("Delete Scooter", self.delete_scooter),
             "0": ("Back", lambda: "back")
         }
-
-    def action(self):
-        print("You selected Submenu 2 action.")
         
     def add_new_scooter(self):
         print("\nEnter scooter details:\n")
