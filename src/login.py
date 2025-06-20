@@ -61,7 +61,7 @@ class Login:
 
     def determine_menu(self, user: User):
         if user.role_id == Role.SUPER_ADMIN.value:
-            SuperAdministratorMenu(user, self.db_connection).display()
+            SuperAdministratorMenu(self.db_connection, user).display()
         elif user.role_id == Role.SYSTEM_ADMIN.value:
             SystemAdministratorMenu(user, self.db_connection).display()
         elif user.role_id == Role.SERVICE_ENGINEER.value:

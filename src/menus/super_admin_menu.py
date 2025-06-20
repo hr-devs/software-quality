@@ -11,9 +11,9 @@ from menus.scooter_menu import ScooterMenu
 
 
 class SuperAdministratorMenu:
-    def __init__(self, user: User, db_connection: DatabaseConnection):
-        self.user = user
+    def __init__(self, db_connection: DatabaseConnection, user: User):
         self.db_connection = db_connection
+        self.user = user
 
     def get_options(self):
         return {
@@ -25,7 +25,7 @@ class SuperAdministratorMenu:
             "6": ("System Administrator Menu", SystemAdminManagerMenu().display),
             "7": ("Scooter Menu", ScooterMenu().display),
             "8": ("Traveller Menu", TravellerMenu().display),
-            "9": ("Backup Menu", BackupMenu(Backup(self.db_connection)).display),
+            "9": ("Backup Menu", BackupMenu(self.db_connection, self.user).display),
             "0": ("Back", lambda: "back")
         }
 

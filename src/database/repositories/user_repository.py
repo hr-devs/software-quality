@@ -28,6 +28,18 @@ class UserRepository():
             cursor.execute("SELECT * FROM users")
             return cursor.fetchall()
         
+    def fetch_system_administrators(self):
+        with self.db_connection.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM users WHERE role_id = (?)", (Role.SYSTEM_ADMIN))
+            return cursor.fetchall()
+        
+    def fetch_service_engineers(self):
+        with self.db_connection.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM users WHERE role_id = (?)", (Role.SERVICE_ENGINEER))
+            return cursor.fetchall()
+        
     def fetch_all_usernames_and_roles(self):
         with self.db_connection.get_connection() as conn:
             cursor = conn.cursor()
