@@ -25,10 +25,15 @@ class TravellerMenu:
             "0": ("Back", lambda: "back")
         }
 
-    def show_travellers(self): # NOT PROPERLY IMPLEMENTED
+    def show_travellers(self):
         travellers = self.traveller_repo.fetch_all()
+        if not travellers:
+            print("\nNo travellers found.\n")
+            return
+        print("\nAll Travellers:")
         for traveller in travellers:
             print(f"{traveller[0]} | {traveller[1]} {traveller[2]} | {traveller[8]}")
+        print()
 
     def add_traveller(self):
         print("\nEnter traveller details:\n")
@@ -46,24 +51,31 @@ class TravellerMenu:
             UserInput.get_data_input("Driving license number: ", "PostalCode")
         )
         self.traveller_repo.insert_travellers([data])
-        print("Traveller added successfully!")
+        print("\nTraveller added successfully!\n")
 
     def update_traveller(self):
         travellers = self.traveller_repo.fetch_all()
-        traveller_dict = {}
-        for i, t in enumerate(travellers):
-            traveller_dict[str(i + 1)] = (f"{t[1]} {t[2]} | {t[8]}", t[0])  # ID is t[0]
-
-        traveller_dict["0"] = ("Back", lambda: "back")
-        menu = BaseMenu("Select a traveller to update", lambda: traveller_dict)
-        selected_id = menu.display()
-
-        if selected == "back" or selected not in traveller_dict:
+        if not travellers:
+            print("\nNo travellers found.\n")
             return
 
-        traveller_id = traveller_dict[selected_id][1]
+        traveller_options = {}
+        print("\nSelect a traveller to update:\n")
+        for idx, t in enumerate(travellers, start=1):
+            traveller_options[str(idx)] = (f"{t[1]} {t[2]} | {t[8]}", t[0])
 
-        field_options = {
+        traveller_options["0"] = ("Back", None)
+
+        for key, (label, _) in traveller_options.items():
+            print(f"{key}. {label}")
+
+        choice = UserInput.get_menu_choice(traveller_options.keys())
+        if choice == "0":
+            return
+
+        traveller_id = traveller_options[choice][1]
+
+        fields = {
             "1": ("first_name", "String"),
             "2": ("last_name", "String"),
             "3": ("birthday", "DateTime"),
@@ -75,38 +87,50 @@ class TravellerMenu:
             "9": ("email_address", "Email"),
             "10": ("mobile_phone", "PostalCode"),
             "11": ("driving_license_number", "PostalCode"),
-            "0": ("Back", lambda: "back")
+            "0": ("Back", None)
         }
 
-        def get_field_menu():
-            return {k: (v[0], lambda f=v[0], t=v[1]: (f, t)) for k, v in field_options.items()}
+        print("\nWhich field do you want to update?")
+        for k, v in fields.items():
+            print(f"{k}: {v[0]}")
 
-        field_menu = BaseMenu("Select field to update", get_field_menu)
-        selected = field_menu.display()
-        if selected == "back":
+        field_choice = UserInput.get_menu_choice(fields.keys())
+        if field_choice == "0":
             return
 
-        field, input_type = field_options[selected]
-        new_value = UserInput.get_data_input(f"Enter new value for {field}: ", input_type)
+        field_name, input_type = fields[field_choice]
+        new_value = UserInput.get_data_input(f"Enter new value for '{field_name}': ", input_type)
         if input_type == "Int":
             new_value = int(new_value)
 
-        self.traveller_repo.update_field(traveller_id, field, new_value)
-        print(f"{field} updated successfully!")
+        self.traveller_repo.update_field(traveller_id, field_name, new_value)
+        print(f"\nTraveller's '{field_name}' updated successfully.\n")
 
     def delete_traveller(self):
         travellers = self.traveller_repo.fetch_all()
-        traveller_dict = {}
-        for i, t in enumerate(travellers):
-            traveller_dict[str(i + 1)] = (f"{t[1]} {t[2]} | {t[8]}", t[0])
-
-        traveller_dict["0"] = ("Back", lambda: "back")
-        menu = BaseMenu("Select a traveller to delete", lambda: traveller_dict)
-        selected_id = menu.display()
-
-        if selected_id == "back" or selected_id not in traveller_dict:
+        if not travellers:
+            print("\nNo travellers available to delete.\n")
             return
 
-        traveller_id = traveller_dict[selected_id][1]
-        self.traveller_repo.delete_traveller(traveller_id)
-        print("Traveller deleted successfully.")
+        traveller_options = {}
+        print("\nSelect a traveller to DELETE:\n")
+        for idx, t in enumerate(travellers, start=1):
+            traveller_options[str(idx)] = (f"{t[1]} {t[2]} | {t[8]}", t[0])
+
+        traveller_options["0"] = ("Back", None)
+
+        for key, (label, _) in traveller_options.items():
+            print(f"{key}. {label}")
+
+        choice = UserInput.get_menu_choice(traveller_options.keys())
+        if choice == "0":
+            return
+
+        traveller_id = traveller_options[choice][1]
+
+        confirm = input(f"\nAre you sure you want to delete traveller ID {traveller_id}? Type 'yes' to confirm: ").strip().lower()
+        if confirm == "yes":
+            self.traveller_repo.delete_traveller(traveller_id)
+            print("\nTraveller deleted successfully.\n")
+        else:
+            print("\nDeletion cancelled.\n")
