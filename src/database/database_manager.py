@@ -45,9 +45,9 @@ class DatabaseManager:
             
             # Insert users
             users_data = [
-                (Encryptor.encrypt_str('sup_adm01'), Encryptor.hash_str('SuperAdmin#2024!'), Encryptor.encrypt_int(1)),
-                (Encryptor.encrypt_str('sys_adm02'), Encryptor.hash_str('SysControl&Pass9'), Encryptor.encrypt_int(2)),
-                (Encryptor.encrypt_str('svc_eng03'), Encryptor.hash_str('Engineer@Service7'), Encryptor.encrypt_int(3))
+                (Encryptor.encrypt_str('sup_adm01'), Encryptor.hash_str('SuperAdmin#2024!'), 1),
+                (Encryptor.encrypt_str('sys_adm02'), Encryptor.hash_str('SysControl&Pass9'), 2),
+                (Encryptor.encrypt_str('svc_eng03'), Encryptor.hash_str('Engineer@Service9'), 3)
             ]
             
             self.user_repo.insert_users( users_data)

@@ -12,7 +12,14 @@ class SystemAdministratorMenu:
         self.user = user
 
     def display(self):
-        menu = BaseMenu("System Administrator Menu", {
+        menu = BaseMenu("System Administrator Menu", self.get_options)
+        menu.display()
+
+    def action(self):
+        print("You selected Submenu 2 action.")
+        
+    def get_options(self):
+        return {
             "1": ("Update your password", UserService(self.db_connection,self.user).update_password),
             "2": ("Search Scooter", self.action),
             "3": ("Update Scooter attributes", self.action),
@@ -22,11 +29,7 @@ class SystemAdministratorMenu:
             "7": ("Scooter Menu", ScooterMenu().display),
             "8": ("Traveller Menu", TravellerMenu().display),
             "0": ("Back", lambda: "back")
-        })
-        menu.display()
-
-    def action(self):
-        print("You selected Submenu 2 action.")
+        }
 
     # def display(self):
     #     menu = BaseMenu("System Administrator Menu", {
