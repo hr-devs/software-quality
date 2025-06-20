@@ -38,6 +38,3 @@ class ServiceEngineerManagerMenu:
             "0": ("Back", lambda: "back")
         }
         
-
-    def action(self):
-        print("You selected Submenu 2 action.")

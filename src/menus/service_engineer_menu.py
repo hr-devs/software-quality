@@ -4,6 +4,7 @@ from database.repositories.user_repository import UserRepository
 from encryptor import Encryptor
 from input_handler import UserInput
 from menus.base_menu import BaseMenu
+from menus.scooter_menu import ScooterMenu
 from services.user_service import UserService
 
 class ServiceEngineerMenu:
@@ -14,14 +15,10 @@ class ServiceEngineerMenu:
     def display(self):
         menu = BaseMenu("Service Engineer Menu", self.get_options)
         menu.display()
-
-    def action(self):
-        print("You selected Submenu 2 action.")
         
     def get_options(self):
         return {
             "1": ("Update your password", UserService(self.db_connection,self.user).update_password),
-            "2": ("Search Scooter", self.action),
-            "3": ("Update Scooter attributes", self.action),
+            "2": ("Scooter menu", ScooterMenu(self.db_connection, self.user).display),
             "0": ("Back", lambda: "back")
         }

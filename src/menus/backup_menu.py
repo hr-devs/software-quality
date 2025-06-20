@@ -19,14 +19,12 @@ class BackupMenu:
                 "1": ("Make Backup", self.backup.backup),
                 "2": ("Restore Backup", self.display_restore_options),
                 "3": ("Allow System Admin to Restore Backup", self.display_generate_restore_code),
-                "4": ("Revoke System Admin to Restore Backup", self.action),
                 "0": ("Back", lambda: "back")
             }
         
         if(self.user.role_id == Role.SYSTEM_ADMIN.value):
             return {
                 "1": ("Make Backup", self.backup.backup),
-                "2": ("Restore Backup", self.action),
                 "0": ("Back", lambda: "back")
             }
 
@@ -36,9 +34,6 @@ class BackupMenu:
 
 
     def display_restore_options(self):
-        # for key, (label, _) in self.backup.get_restore_options().items():
-        #     print(f"{key}: {label}")
-
         menu = BaseMenu("Restore Menu", self.backup.get_restore_options())
         print("\n!!! You will be logged out if you restore a backup !!!")
         menu.display()
@@ -67,11 +62,6 @@ class BackupMenu:
         menu.display()
         backup = selected[0]
 
-        
-
         code = self.backup.generate_restore_code(admin[1], admin[3], backup)
         print(f"Restore code: {code} generated and usable")
-        
-
-    def action(self):
-        print("You selected Submenu 2 action.")
+    
