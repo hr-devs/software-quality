@@ -1,6 +1,8 @@
 from database.database_connection import DatabaseConnection
 from typing import List, Tuple
 
+from input_handler import UserInput
+
 class ScooterRepository():
     def __init__(self, db_connection: DatabaseConnection):
         self.db_connection = db_connection
@@ -49,6 +51,16 @@ class ScooterRepository():
                     out_of_service, mileage, last_maintenance_date
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, scooter_data)
+            conn.commit()
+            
+    def update_scooter(self, scooter_id: int, field: str, new_value):
+        with self.db_connection.get_connection() as conn:
+            cursor = conn.cursor() # DOES FIELD NEED TO BE IN THE QUERY                 ???
+            cursor.execute(f"""
+                UPDATE scooters
+                SET {field} = ?
+                WHERE id = ?
+            """, (new_value, scooter_id))
             conn.commit()
     
     def fetch_all(self):

@@ -16,7 +16,7 @@ class ScooterMenu:
     def get_options(self):
         return {
             "1": ("Add new Scooter", self.add_new_scooter),
-            "2": ("Update Scooter", self.action),
+            "2": ("Update Scooter", self.update_scooter),
             "3": ("Delete Scooter", self.action),
             "0": ("Back", lambda: "back")
         }
@@ -57,3 +57,72 @@ class ScooterMenu:
 
         ScooterRepository.add_scooter(self, scooter_data)
         print("\nScooter added successfully!")
+        
+    def update_scooter(self):
+        scooter_repo = ScooterRepository(self.db_connection)
+        scooters = scooter_repo.fetch_all()
+
+        if not scooters:
+            print("No scooters found.")
+            return
+
+        # Build menu options
+        scooter_options = {}
+        print("\nSelect a scooter to update:\n")
+        for idx, scooter in enumerate(scooters, start=1):
+            scooter_id = scooter[0]
+            brand = scooter[1]
+            model = scooter[2]
+            serial = scooter[3]
+            scooter_options[str(idx)] = (f"{brand} {model} (Serial: {serial})", scooter_id)
+
+        # Add back option
+        scooter_options["0"] = ("Back", None)
+
+        # Display menu
+        for key, (label, _) in scooter_options.items():
+            print(f"{key}. {label}")
+
+        choice = UserInput.get_menu_choice(scooter_options.keys())
+
+        if choice == "0":
+            return
+
+        selected_scooter_id = scooter_options[choice][1]
+
+        # Select which field to update
+        fields = {
+            "1": ("brand", "String"),
+            "2": ("model", "String"),
+            "3": ("serial_number", "PostalCode"),
+            "4": ("top_speed", "Int"),
+            "5": ("battery_capacity", "Int"),
+            "6": ("soc", "Int"),
+            "7": ("soc_min_target", "Int"),
+            "8": ("soc_max_target", "Int"),
+            "9": ("description", None),  # Optional
+            "10": ("latitude", "Int"),
+            "11": ("longitude", "Int"),
+            "12": ("out_of_service", "Int"),
+            "13": ("mileage", "Int"),
+            "14": ("last_maintenance_date", "DateTime")
+        }
+
+        print("\nWhich field do you want to update?")
+        for k, v in fields.items():
+            print(f"{k}: {v[0]}")
+
+        field_choice = UserInput.get_menu_choice(fields.keys())
+        field_name, field_type = fields[field_choice]
+
+        # Get new value
+        if field_type:
+            new_value = UserInput.get_data_input(f"Enter new value for '{field_name}': ", field_type)
+            if field_type == "Int":
+                new_value = int(new_value)
+        else:
+            new_value = input(f"Enter new value for '{field_name}': ").strip()
+
+        # Perform update
+        scooter_repo.update_scooter(selected_scooter_id, field_name, new_value)
+        print(f"\n✅ Scooter {selected_scooter_id}'s '{field_name}' updated successfully.")
