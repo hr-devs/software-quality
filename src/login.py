@@ -19,6 +19,7 @@ class Login:
 
     def login(self):#, username, password): TODO should be added after debugging
         self.current_user = self.authenticate(username_input="sup_adm01", password_input="SuperAdmin#2024!")
+        self.current_user = self.authenticate(username_input="svc_eng03", password_input="Engineer@Service9")
         if (self.current_user != None):
             self.determine_menu(self.current_user)
         
@@ -51,7 +52,7 @@ class Login:
 
         if (user_match != None):
             if (Encryptor.check_hashed_data(password_input ,user_match[2])):
-                return User(user[1], user[2], user[3])
+                return User(user[0], user[1], user[2], user[3]) 
             else:
                 return None
 
@@ -63,9 +64,9 @@ class Login:
         if user.role_id == Role.SUPER_ADMIN.value:
             SuperAdministratorMenu(self.db_connection, user).display()
         elif user.role_id == Role.SYSTEM_ADMIN.value:
-            SystemAdministratorMenu(user, self.db_connection).display()
+            SystemAdministratorMenu(self.db_connection, user).display()
         elif user.role_id == Role.SERVICE_ENGINEER.value:
-            ServiceEngineerMenu(user, self.db_connection).display()
+            ServiceEngineerMenu(self.db_connection, user).display()
         else:
             print("Unknown role ID. Access denied.")
 
