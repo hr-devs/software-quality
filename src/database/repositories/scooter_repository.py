@@ -53,6 +53,12 @@ class ScooterRepository():
             """, scooter_data)
             conn.commit()
             
+    def delete_scooter(self, scooter_id: int):
+        with self.db_connection.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM scooters WHERE id = ?", (scooter_id,))
+            conn.commit()
+            
     def update_scooter(self, scooter_id: int, field: str, new_value):
         with self.db_connection.get_connection() as conn:
             cursor = conn.cursor() # DOES FIELD NEED TO BE IN THE QUERY                 ???
