@@ -1,5 +1,3 @@
-# database/repositories/traveller_repository.py
-
 from database.database_connection import DatabaseConnection
 from typing import List, Tuple
 
@@ -13,17 +11,22 @@ class TravellerRepository:
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS travellers (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
+
                     first_name TEXT NOT NULL,
                     last_name TEXT NOT NULL,
-                    birthday TEXT NOT NULL,
-                    gender TEXT NOT NULL,
+                    birthday TEXT NOT NULL,  -- should be -> YYYY-MM-DD
+                    gender TEXT NOT NULL, -- should be -> 'male' or 'female'
+
                     street_name TEXT NOT NULL,
                     house_number INTEGER NOT NULL,
-                    zip_code TEXT NOT NULL,
+                    zip_code TEXT NOT NULL, -- format correctly
+
                     city TEXT NOT NULL,
+
                     email_address TEXT NOT NULL UNIQUE,
-                    mobile_phone TEXT NOT NULL,
-                    driving_license_number TEXT NOT NULL
+                    mobile_phone TEXT NOT NULL, -- format correctly
+
+                    driving_license_number TEXT NOT NULL -- format correctly (2 formats possible)
                 );
             """)
             conn.commit()
@@ -51,15 +54,36 @@ class TravellerRepository:
             """, travellers_data)
             conn.commit()
 
-    def update_field(self, traveller_id: int, field: str, value):
+    def update_traveller(self, traveller_id: int, updated_data: Tuple):
         with self.db_connection.get_connection() as conn:
             cursor = conn.cursor()
-            query = f"UPDATE travellers SET {field} = ? WHERE id = ?"
-            cursor.execute(query, (value, traveller_id))
+            cursor.execute("""
+                UPDATE travellers SET
+                    first_name = ?, last_name = ?, birthday = ?, gender = ?, 
+                    street_name = ?, house_number = ?, zip_code = ?, city = ?, 
+                    email_address = ?, mobile_phone = ?, driving_license_number = ?
+                WHERE id = ?
+            """, (*updated_data, traveller_id))
             conn.commit()
 
     def delete_traveller(self, traveller_id: int):
         with self.db_connection.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("DELETE FROM travellers WHERE id = ?", (traveller_id,))
+            conn.commit()
+
+    def update_field(self, traveller_id: int, field_name: str, new_value):
+        allowed_fields = {
+            "first_name", "last_name", "birthday", "gender",
+            "street_name", "house_number", "zip_code", "city",
+            "email_address", "mobile_phone", "driving_license_number"
+        }
+
+        if field_name not in allowed_fields:
+            raise ValueError(f"Invalid field name: {field_name}")
+
+        with self.db_connection.get_connection() as conn:
+            cursor = conn.cursor()
+            query = f"UPDATE travellers SET {field_name} = ? WHERE id = ?"
+            cursor.execute(query, (new_value, traveller_id))
             conn.commit()
