@@ -4,6 +4,7 @@ from menus.base_menu import BaseMenu
 from menus.scooter_menu import ScooterMenu
 from menus.service_engineer_manager_menu import ServiceEngineerManagerMenu
 from menus.traveller_menu import TravellerMenu
+from services.user_service import UserService
 
 class SystemAdministratorMenu:
     def __init__(self, db_connection: DatabaseConnection, user: User):
@@ -11,7 +12,7 @@ class SystemAdministratorMenu:
 
     def display(self):
         menu = BaseMenu("System Administrator Menu", {
-            "1": ("Update your password", self.action),
+            "1": ("Update your password", UserService(self.db_connection,self.user).update_password),
             "2": ("Search Scooter", self.action),
             "3": ("Update Scooter attributes", self.action),
             "4": ("Check list of users + roles", self.action),
