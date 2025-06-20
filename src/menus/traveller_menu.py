@@ -3,6 +3,7 @@ from database.database_connection import DatabaseConnection
 from database.repositories.traveller_repository import TravellerRepository
 from input_handler import UserInput
 from menus.base_menu import BaseMenu
+from encryptor import Encryptor  # Make sure this is correctly imported
 
 class TravellerMenu:
     def __init__(self, db_connection: DatabaseConnection, user: User):
@@ -23,17 +24,17 @@ class TravellerMenu:
     def add_traveller(self):
         print("\nEnter traveller details:\n")
         data = (
-            UserInput.get_data_input("First name: ", "String"),
-            UserInput.get_data_input("Last name: ", "String"),
-            UserInput.get_data_input("Birthday (YYYY-MM-DD): ", "DateTime"),
-            UserInput.get_data_input("Gender (male/female): ", "Gender"),
-            UserInput.get_data_input("Street name: ", "String"),
-            int(UserInput.get_data_input("House number: ", "Int")),
-            UserInput.get_data_input("Zip code: ", "PostalCode"),
-            UserInput.get_data_input("City: ", "String"),
-            UserInput.get_data_input("Email address: ", "Email"),
-            UserInput.get_data_input("Mobile phone: ", "PostalCode"),
-            UserInput.get_data_input("Driving license number: ", "PostalCode")
+            Encryptor.encrypt_str(UserInput.get_data_input("First name: ", "String")),
+            Encryptor.encrypt_str(UserInput.get_data_input("Last name: ", "String")),
+            Encryptor.encrypt_str(UserInput.get_data_input("Birthday (YYYY-MM-DD): ", "DateTime")),
+            Encryptor.encrypt_str(UserInput.get_data_input("Gender (male/female): ", "Gender")),
+            Encryptor.encrypt_str(UserInput.get_data_input("Street name: ", "String")),
+            int(UserInput.get_data_input("House number: ", "Int")),  # Assuming house number is not sensitive
+            Encryptor.encrypt_str(UserInput.get_data_input("Zip code: ", "PostalCode")),
+            Encryptor.encrypt_str(UserInput.get_data_input("City: ", "String")),
+            Encryptor.encrypt_str(UserInput.get_data_input("Email address: ", "Email")),
+            Encryptor.encrypt_str(UserInput.get_data_input("Mobile phone: ", "PostalCode")),
+            Encryptor.encrypt_str(UserInput.get_data_input("Driving license number: ", "PostalCode"))
         )
 
         traveller_repo = TravellerRepository(self.db_connection)
@@ -90,6 +91,8 @@ class TravellerMenu:
 
         new_value = UserInput.get_data_input(f"Enter new value for '{field_name.replace('_', ' ')}': ", field_type)
 
+        if field_type != "Int":
+            new_value = Encryptor.encrypt_str(new_value)
+
         traveller_repo.update_field(selected_traveller_id, field_name, new_value)
         print(f"\nTraveller ID {selected_traveller_id}'s '{field_name}' updated successfully.")
-
