@@ -8,7 +8,7 @@ class ScooterMenu:
     def __init__(self, db_connection: DatabaseConnection, user: User):
         self.db_connection = db_connection
         self.user = user
-        
+
     def display(self):
         menu = BaseMenu("Scooter Menu", self.get_options)
         menu.display()
@@ -21,9 +21,6 @@ class ScooterMenu:
             "0": ("Back", lambda: "back")
         }
 
-    def action(self):
-        print("You selected Submenu 2 action.")
-        
     def add_new_scooter(self):
         print("\nEnter scooter details:\n")
 
@@ -31,19 +28,19 @@ class ScooterMenu:
         model = UserInput.get_data_input("Model: ", "String")
         serial_number = UserInput.get_data_input("Serial number (10-17 alphanumeric): ", "PostalCode")
 
-        top_speed = int(UserInput.get_data_input("Top speed (km/h): ", "Int"))
-        battery_capacity = int(UserInput.get_data_input("Battery capacity (Wh): ", "Int"))
-        soc = float(UserInput.get_data_input("State of charge (0.0-100.0): ", "Int")) 
-        soc_min_target = float(UserInput.get_data_input("Minimum SoC target (0.0-100.0): ", "Int"))
-        soc_max_target = float(UserInput.get_data_input("Maximum SoC target (0.0-100.0): ", "Int"))
+        top_speed = int(UserInput.get_data_input("Top speed (km/h): ", "ZeroToHundred"))
+        battery_capacity = int(UserInput.get_data_input("Battery capacity (Wh): ", "ZeroToHundred"))
+        soc = UserInput.get_data_input("State of charge (0-100): ", "ZeroToHundred")
+        soc_min_target = UserInput.get_data_input("Minimum SoC target (0-100): ", "ZeroToHundred")
+        soc_max_target = UserInput.get_data_input("Maximum SoC target (0-100): ", "ZeroToHundred")
 
         description = input("Description (optional): ").strip()
 
-        latitude = float(UserInput.get_data_input("Latitude (e.g. 51.92250): ", "Int")) 
-        longitude = float(UserInput.get_data_input("Longitude (e.g. 4.47917): ", "Int"))
+        latitude = UserInput.get_data_input("Latitude (e.g. 51.92250): ", "FloatLatLong")
+        longitude = UserInput.get_data_input("Longitude (e.g. 4.47917): ", "FloatLatLong")
 
-        out_of_service = int(UserInput.get_data_input("Out of service? (0 = No, 1 = Yes): ", "Int"))
-        mileage = float(UserInput.get_data_input("Mileage (in km): ", "Int"))
+        out_of_service = UserInput.get_data_input("Out of service? (0 = No, 1 = Yes): ", "YesNoInt")
+        mileage = UserInput.get_data_input("Mileage (in km): ", "Float")
         last_maintenance_date = UserInput.get_data_input("Last maintenance date (YYYY-MM-DD): ", "DateTime")
 
         scooter_data = (
@@ -57,7 +54,7 @@ class ScooterMenu:
 
         ScooterRepository.add_scooter(self, scooter_data)
         print("\nScooter added successfully!")
-        
+
     def update_scooter(self):
         scooter_repo = ScooterRepository(self.db_connection)
         scooters = scooter_repo.fetch_all()
@@ -81,7 +78,6 @@ class ScooterMenu:
             print(f"{key}. {label}")
 
         choice = UserInput.get_menu_choice(scooter_options.keys())
-
         if choice == "0":
             return
 
@@ -91,16 +87,16 @@ class ScooterMenu:
             "1": ("brand", "String"),
             "2": ("model", "String"),
             "3": ("serial_number", "PostalCode"),
-            "4": ("top_speed", "Int"),
-            "5": ("battery_capacity", "Int"),
-            "6": ("soc", "Int"),
-            "7": ("soc_min_target", "Int"),
-            "8": ("soc_max_target", "Int"),
+            "4": ("top_speed", "ZeroToHundred"),    
+            "5": ("battery_capacity", "ZeroToHundred"),  
+            "6": ("soc", "ZeroToHundred"),               
+            "7": ("soc_min_target", "ZeroToHundred"),    
+            "8": ("soc_max_target", "ZeroToHundred"),    
             "9": ("description", None),
-            "10": ("latitude", "Int"),
-            "11": ("longitude", "Int"),
-            "12": ("out_of_service", "Int"),
-            "13": ("mileage", "Int"),
+            "10": ("latitude", "FloatLatLong"),
+            "11": ("longitude", "FloatLatLong"),
+            "12": ("out_of_service", "YesNoInt"),
+            "13": ("mileage", "Float"),
             "14": ("last_maintenance_date", "DateTime")
         }
 
@@ -113,7 +109,7 @@ class ScooterMenu:
 
         if field_type:
             new_value = UserInput.get_data_input(f"Enter new value for '{field_name}': ", field_type)
-            if field_type == "Int":
+            if field_type in ("Int", "ZeroToHundred"):
                 new_value = int(new_value)
         else:
             new_value = input(f"Enter new value for '{field_name}': ").strip()
@@ -144,7 +140,6 @@ class ScooterMenu:
             print(f"{key}. {label}")
 
         choice = UserInput.get_menu_choice(scooter_options.keys())
-
         if choice == "0":
             return
 

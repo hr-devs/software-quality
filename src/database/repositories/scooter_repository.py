@@ -60,14 +60,22 @@ class ScooterRepository():
             conn.commit()
             
     def update_scooter(self, scooter_id: int, field: str, new_value):
+        allowed_fields = {
+            "brand", "model", "serial_number", "top_speed",
+            "battery_capacity", "soc", "soc_min_target",
+            "soc_max_target", "description", "latitude",
+            "longitude", "out_of_service", "mileage", "last_maintenance_date"
+        }
+
+        if field not in allowed_fields:
+            raise ValueError(f"Invalid field name: {field}")
+
         with self.db_connection.get_connection() as conn:
-            cursor = conn.cursor() # DOES FIELD NEED TO BE IN THE QUERY                 ???
-            cursor.execute(f"""
-                UPDATE scooters
-                SET {field} = ?
-                WHERE id = ?
-            """, (new_value, scooter_id))
+            cursor = conn.cursor()
+            query = f"UPDATE scooters SET {field} = ? WHERE id = ?"
+            cursor.execute(query, (new_value, scooter_id))
             conn.commit()
+
     
     def fetch_all(self):
         with self.db_connection.get_connection() as conn:
