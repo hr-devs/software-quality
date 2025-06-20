@@ -1,28 +1,31 @@
+from backup import Backup
 from data_transfer_objects import User
+from database.database_connection import DatabaseConnection
 from menus.base_menu import BaseMenu
 from menus.backup_menu import BackupMenu
 from menus.service_engineer_manager_menu import ServiceEngineerManagerMenu
+from menus.show_users_menu import ShowUsersMenu
 from menus.system_admin_manager_menu import SystemAdminManagerMenu
 from menus.traveller_menu import TravellerMenu
 from menus.scooter_menu import ScooterMenu
 
 
 class SuperAdministratorMenu:
-    def __init__(self, user: User):
+    def __init__(self, db_connection: DatabaseConnection, user: User):
+        self.db_connection = db_connection
         self.user = user
 
     def get_options(self):
         return {
-            "1": ("Update your password", self.action),
-            "2": ("Search Scooter", self.action),
-            "3": ("Update Scooter attributes", self.action),
-            "4": ("Check list of users + roles", self.action),
-            "5": ("See logs", self.action),
-            "6": ("Service Engineer Menu", ServiceEngineerManagerMenu().display),
-            "7": ("System Administrator Menu", SystemAdminManagerMenu().display),
-            "8": ("Scooter Menu", ScooterMenu().display),
-            "9": ("Traveller Menu", TravellerMenu().display),
-            "10": ("Backup Menu", BackupMenu().display),
+            "1": ("Search Scooter", self.action),
+            "2": ("Update Scooter attributes", self.action),
+            "3": ("Check list of users + roles", ShowUsersMenu(self.db_connection).display),
+            "4": ("See logs", self.action),
+            "5": ("Service Engineer Menu", ServiceEngineerManagerMenu().display),
+            "6": ("System Administrator Menu", SystemAdminManagerMenu().display),
+            "7": ("Scooter Menu", ScooterMenu().display),
+            "8": ("Traveller Menu", TravellerMenu().display),
+            "9": ("Backup Menu", BackupMenu(self.db_connection, self.user).display),
             "0": ("Back", lambda: "back")
         }
 

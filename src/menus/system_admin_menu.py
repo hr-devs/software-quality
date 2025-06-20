@@ -1,9 +1,14 @@
+from data_transfer_objects import User
+from database.database_connection import DatabaseConnection
 from menus.base_menu import BaseMenu
 from menus.scooter_menu import ScooterMenu
 from menus.service_engineer_manager_menu import ServiceEngineerManagerMenu
 from menus.traveller_menu import TravellerMenu
 
 class SystemAdministratorMenu:
+    def __init__(self, db_connection: DatabaseConnection, user: User):
+        self.db_connection = db_connection
+
     def display(self):
         menu = BaseMenu("System Administrator Menu", {
             "1": ("Update your password", self.action),
