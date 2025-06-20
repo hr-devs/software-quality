@@ -1,6 +1,7 @@
 from backup import Backup
 from data_transfer_objects import User
 from database.database_connection import DatabaseConnection
+from database.repositories.user_repository import UserRepository
 from enums import Role
 from menus.base_menu import BaseMenu
 
@@ -8,6 +9,7 @@ class BackupMenu:
     def __init__(self, db_connection: DatabaseConnection, user: User):
         self.backup = Backup(db_connection)
         self.user = user
+        self.user_repo = UserRepository(db_connection)
 
     def get_options(self):
         if(self.user.role_id == Role.SUPER_ADMIN.value):
@@ -35,11 +37,19 @@ class BackupMenu:
         #     print(f"{key}: {label}")
 
         return self.backup.get_restore_options()
+    
+    def get_system_admin_options(self):
+
+        return self.user_repo.fetch_system_administrators
 
     def display_restore_options(self):
-        menu2 = BaseMenu("Restore Menu", self.get_restore_options)
+        menu = BaseMenu("Restore Menu", self.get_restore_options)
         print("\n!!! You will be logged out if you restore a backup !!!")
-        menu2.display()
+        menu.display()
+
+    def display_generate_restore_code(self):
+        menu = BaseMenu("Generate Restore Code Menu", self.get_restore_options)
+        menu.display()
 
     def action(self):
         print("You selected Submenu 2 action.")
