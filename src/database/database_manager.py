@@ -47,7 +47,7 @@ class DatabaseManager:
             self.activity_log_repo.clear_all()
             self.restore_codes_repo.clear_all()
             
-            # Populate roles
+            # Populate roles UNNECESSARY
             roles_data = [
                 (1, 'super_admin'),
                 (2, 'system_admin'),
@@ -58,9 +58,9 @@ class DatabaseManager:
             
             # Insert users
             users_data = [
-                (Encryptor.encrypt_str('sup_adm01'), Encryptor.hash_str('SuperAdmin#2024!'), 1),
-                (Encryptor.encrypt_str('sys_adm02'), Encryptor.hash_str('SysControl&Pass9'), 2),
-                (Encryptor.encrypt_str('svc_eng03'), Encryptor.hash_str('Engineer@Service7'), 3)
+                (Encryptor.encrypt_str('sup_adm01'), Encryptor.hash_str('SuperAdmin#2024!'), Encryptor.encrypt_int(1)),
+                (Encryptor.encrypt_str('sys_adm02'), Encryptor.hash_str('SysControl&Pass9'), Encryptor.encrypt_int(2)),
+                (Encryptor.encrypt_str('svc_eng03'), Encryptor.hash_str('Engineer@Service7'), Encryptor.encrypt_int(3))
             ]
             
             self.user_repo.insert_users( users_data)
