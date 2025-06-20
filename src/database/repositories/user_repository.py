@@ -32,13 +32,13 @@ class UserRepository():
     def fetch_system_administrators(self):
         with self.db_connection.get_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM users WHERE role_id = (?)", (Role.SYSTEM_ADMIN))
+            cursor.execute("SELECT * FROM users WHERE role_id = (?)", (Role.SYSTEM_ADMIN.value, ))
             return cursor.fetchall()
         
     def fetch_service_engineers(self):
         with self.db_connection.get_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM users WHERE role_id = (?)", (Role.SERVICE_ENGINEER))
+            cursor.execute("SELECT * FROM users WHERE role_id = (?)", (Role.SERVICE_ENGINEER.value, ))
             return cursor.fetchall()
         
     def fetch_all_usernames_and_roles(self):
@@ -66,7 +66,7 @@ class UserRepository():
 
         for index, service_engineer in enumerate(service_engineers_list):
             service_engineers[str(index + 1)] = (
-                f"username: {Encryptor.decrypt_data(service_engineer[0])} | role: {Role(service_engineer[1]).name}",
+                f"username: {Encryptor.decrypt_data(service_engineer[1])} | role: {Role(service_engineer[3]).name}",
                 lambda se=service_engineer: function(se)
             )
 
@@ -79,7 +79,7 @@ class UserRepository():
 
         for index, system_administrator in enumerate(system_administrators_list):
             system_administrators[str(index + 1)] = (
-                f"username: {Encryptor.decrypt_data(system_administrator[0])} | role: {Role(system_administrator[1]).name}",
+                f"username: {Encryptor.decrypt_data(system_administrator[1])} | role: {Role(system_administrator[3]).name}",
                 lambda sa=system_administrator: function(sa)
             )
 
