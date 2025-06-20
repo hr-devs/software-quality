@@ -28,11 +28,11 @@ class ScooterMenu:
         model = UserInput.get_data_input("Model: ", "String")
         serial_number = UserInput.get_data_input("Serial number (10-17 alphanumeric): ", "PostalCode")
 
-        top_speed = int(UserInput.get_data_input("Top speed (km/h): ", "Int"))
-        battery_capacity = int(UserInput.get_data_input("Battery capacity (Wh): ", "Int"))
-        soc = UserInput.get_data_input("State of charge (0.0-100.0): ", "FloatRange")
-        soc_min_target = UserInput.get_data_input("Minimum SoC target (0.0-100.0): ", "FloatRange")
-        soc_max_target = UserInput.get_data_input("Maximum SoC target (0.0-100.0): ", "FloatRange")
+        top_speed = int(UserInput.get_data_input("Top speed (km/h): ", "ZeroToHundred"))
+        battery_capacity = int(UserInput.get_data_input("Battery capacity (Wh): ", "ZeroToHundred"))
+        soc = UserInput.get_data_input("State of charge (0-100): ", "ZeroToHundred")
+        soc_min_target = UserInput.get_data_input("Minimum SoC target (0-100): ", "ZeroToHundred")
+        soc_max_target = UserInput.get_data_input("Maximum SoC target (0-100): ", "ZeroToHundred")
 
         description = input("Description (optional): ").strip()
 
@@ -87,11 +87,11 @@ class ScooterMenu:
             "1": ("brand", "String"),
             "2": ("model", "String"),
             "3": ("serial_number", "PostalCode"),
-            "4": ("top_speed", "Int"),
-            "5": ("battery_capacity", "Int"),
-            "6": ("soc", "FloatRange"),
-            "7": ("soc_min_target", "FloatRange"),
-            "8": ("soc_max_target", "FloatRange"),
+            "4": ("top_speed", "ZeroToHundred"),    
+            "5": ("battery_capacity", "ZeroToHundred"),  
+            "6": ("soc", "ZeroToHundred"),               
+            "7": ("soc_min_target", "ZeroToHundred"),    
+            "8": ("soc_max_target", "ZeroToHundred"),    
             "9": ("description", None),
             "10": ("latitude", "FloatLatLong"),
             "11": ("longitude", "FloatLatLong"),
@@ -109,7 +109,7 @@ class ScooterMenu:
 
         if field_type:
             new_value = UserInput.get_data_input(f"Enter new value for '{field_name}': ", field_type)
-            if field_type == "Int":
+            if field_type in ("Int", "ZeroToHundred"):
                 new_value = int(new_value)
         else:
             new_value = input(f"Enter new value for '{field_name}': ").strip()

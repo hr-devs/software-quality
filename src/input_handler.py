@@ -21,7 +21,8 @@ class UserInput:
         emailPattern = re.compile(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")
         passwordPattern = re.compile(r"^[A-Za-z0-9~!@#$%&_\-+=`|\\(){}\[\]:;'<>,.?/]{12,30}$")
         usernamePattern = re.compile(r"^[A-Za-z_][A-Za-z0-9_'.]{7,9}$", re.IGNORECASE)
-        genderPattern = re.compile(r"^(male|female)$", re.IGNORECASE)
+        genderPattern = re.compile(r"^(male|female)$", re.IGNORECASE),
+        zeroToHundredPattern = re.compile(r"^(100|[1-9]?[0-9])$")
 
         while True:
             userInput = input(inputSentence).strip()
@@ -35,6 +36,11 @@ class UserInput:
                 if intPattern.fullmatch(userInput):
                     return userInput
                 print("Invalid input. Only whole numbers are allowed.")
+
+            elif type == "ZeroToHundred":
+                if zeroToHundredPattern.fullmatch(userInput):
+                    return int(userInput)
+                print("Invalid input. Enter an integer from 0 to 100.")
 
             elif type == "FloatRange":
                 try:
