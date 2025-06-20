@@ -5,7 +5,7 @@ class User:
     id: int = 0
     username: str = ""
     password: str = ""
-    role_id: int = 0
+    role_id: str = ""
 
 
 @dataclass

@@ -2,6 +2,7 @@ from backup import Backup
 from data_transfer_objects import User
 from database.database_connection import DatabaseConnection
 from database.repositories.user_repository import UserRepository
+from encryptor import Encryptor
 from enums import Role
 from menus.base_menu import BaseMenu
 
@@ -16,7 +17,7 @@ class BackupMenu:
             return {
                 "1": ("Make Backup", self.backup.backup),
                 "2": ("Restore Backup", self.display_restore_options),
-                "3": ("Allow System Admin to Restore Backup", self.action),
+                "3": ("Allow System Admin to Restore Backup", self.display_generate_restore_code),
                 "4": ("Revoke System Admin to Restore Backup", self.action),
                 "0": ("Back", lambda: "back")
             }
@@ -39,8 +40,7 @@ class BackupMenu:
         return self.backup.get_restore_options()
     
     def get_system_admin_options(self):
-
-        return self.user_repo.fetch_system_administrators
+        return self.user_repo.get_system_administrators_options(lambda: "back")
 
     def display_restore_options(self):
         menu = BaseMenu("Restore Menu", self.get_restore_options)
@@ -48,7 +48,7 @@ class BackupMenu:
         menu.display()
 
     def display_generate_restore_code(self):
-        menu = BaseMenu("Generate Restore Code Menu", self.get_restore_options)
+        menu = BaseMenu("Generate Restore Code Menu", self.get_system_admin_options)
         menu.display()
 
     def action(self):
