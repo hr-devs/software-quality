@@ -9,6 +9,7 @@ from services.user_service import UserService
 class SystemAdministratorMenu:
     def __init__(self, db_connection: DatabaseConnection, user: User):
         self.db_connection = db_connection
+        self.user = user
 
     def display(self):
         menu = BaseMenu("System Administrator Menu", {
