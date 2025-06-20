@@ -58,6 +58,8 @@ class ActivityLog:
 
 @dataclass
 class RestoreCode:
+    restore_code: str = ""
+    backup_file_name: str = ""
     creation_date: str = ""
     username: str = ""
     role_id: int = 0
